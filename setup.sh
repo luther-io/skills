@@ -92,6 +92,9 @@ link_skills_into() {
   local skill src link current
 
   for skill_path in "$SKILLS_DIR"/*/; do
+    # Only folders with a SKILL.md are skills. This skips skills/synced/, which
+    # claude.ai's skill sync writes through the ~/.agents/skills symlink.
+    [ -f "$skill_path/SKILL.md" ] || continue
     skill="$(basename "$skill_path")"
     src="${skill_path%/}"
     link="$target_dir/$skill"

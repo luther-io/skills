@@ -59,6 +59,10 @@ Backups.backupdb
 MobileBackups.trash
 tmbootpicker.efi
 
+# claude.ai skill sync — written into ~/.agents/skills/synced/, which is this
+# repo's skills/ via the ~/.agents/skills symlink.
+skills/synced/
+
 #amazon skills
 skills/amazon*
 skills/*aws*
