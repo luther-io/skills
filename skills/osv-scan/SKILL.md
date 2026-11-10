@@ -1,6 +1,7 @@
 ---
 name: osv-scan
 description: Scan a project folder for known-vulnerable dependencies with osv-scanner, triage the findings by severity and upgrade effort, and recommend a systematic remediation plan — grouped safe bumps, separate tickets for breaking upgrades, and long-term automation (Dependabot, osv-scanner in CI) — with ticket drafts for approval. Use whenever the user asks to run osv-scanner, audit or scan dependencies for vulnerabilities/CVEs, check whether a repo has vulnerable packages, triage `npm audit`/`pnpm audit`-style findings, or asks "what should we do about these vulns", even if they don't name osv-scanner.
+runs_on: [local]
 ---
 
 # OSV Scan

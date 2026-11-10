@@ -1,6 +1,7 @@
 ---
 name: review-pr
 description: Review someone else's pull request on GitHub or Bitbucket and produce private notes for the user — a pre-digested walkthrough (business case, change map, intent check, findings) for larger PRs, or a findings-only second pass for small ones. Every finding links to the exact line on the web. Never posts unless told to. Use when the user asks to review, digest, or explain a PR, pastes a PR URL, or asks "what do I need to know about this PR".
+runs_on: [local]
 ---
 
 # Review PR

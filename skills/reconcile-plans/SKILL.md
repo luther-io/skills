@@ -1,6 +1,7 @@
 ---
 name: reconcile-plans
 description: Reconcile multiple plans for the same piece of work — written by different models or sessions (e.g. rubber-duck runs in Fable, Opus, Kimi, GPT) — into one final plan, finding where they agree and diverge, optionally convening a council of lens-based reviewers to judge them. Use when the user wants to compare, reconcile, or merge multiple plans, asks for a council, verdict, or second opinion across plans, mentions plan files like <model>-<topic>.md, or says they ran the same planning exercise in multiple sessions — even if they don't use the word "reconcile".
+runs_on: [web, local]
 ---
 
 # Reconcile Plans

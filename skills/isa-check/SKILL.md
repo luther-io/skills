@@ -1,6 +1,7 @@
 ---
 name: isa-check
 description: Check the current code against an initiative's Ideal State Artifact (ISA) — run each Ideal State Criterion's (ISC) eval at its rung (assert, test, question set, judge), check the constraints, and report pass / fail / untested with evidence; then offer to update the ISA's Status. Read-only on code. Use when the user asks "are we done?", "check against the ISA", "which ISCs pass", "isa check", or wants to verify an initiative before shipping.
+runs_on: [local]
 ---
 
 # ISA Check
