@@ -5,6 +5,7 @@ source: https://github.com/viticci/remctl
 source_path: SKILL.md
 upstream_ref: d3985293a01aa1c2da761ff442812a148be9964f
 last_reviewed: 2026-10-20
+runs_on: [local]
 ---
 
 # RemCTL

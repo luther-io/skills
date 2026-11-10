@@ -5,6 +5,7 @@ source: https://github.com/mattpocock/skills
 source_path: skills/engineering/improve-codebase-architecture
 upstream_ref: 8b36d4fb2635b3c21998dcd8144439c9e5ba7302
 last_reviewed: 2026-08-06
+runs_on: [web, local]
 ---
 
 # Improve Codebase Architecture

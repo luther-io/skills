@@ -1,6 +1,7 @@
 ---
 name: herdr
 description: Drive or customize the Herdr desktop app (spaces, tabs, panes, layouts, keys, settings, mods) and run or coordinate agents and programs in herdr-core (`hc`). Use when the user mentions Herdr, herdr-app, hc, herdr-core, or asks to open/split/focus a tab or pane, rebind a Herdr key, change a Herdr layout or theme, write a Herdr mod, or start, read, message, or wait on an agent in a persistent terminal.
+runs_on: [local]
 ---
 
 # Herdr

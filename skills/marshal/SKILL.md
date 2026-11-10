@@ -2,6 +2,7 @@
 name: marshal
 description: Sets up project rails for human + AI collaboration. Walks through six sections — CLAUDE.md/AGENTS.md coherence, issue tracker + triage labels, domain doc layout, intent docs (ISA) location, code-style conventions, and version-control conventions — recording the result so the engineering skills (`to-issues`, `diagnose`, `improve-codebase-architecture`, `zoom-out`) and any humans working alongside agents share the same baseline. Run on any new or existing repo before starting agent-driven work, or when those skills appear to be missing context.
 disable-model-invocation: true
+runs_on: [local]
 ---
 
 # Marshal

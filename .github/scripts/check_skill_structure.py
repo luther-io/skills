@@ -7,7 +7,8 @@
     uv run --script .github/scripts/check_skill_structure.py
 
 Checks:
-- SKILL.md has YAML frontmatter; `name` matches the directory; `description` is set.
+- SKILL.md has YAML frontmatter; `name` matches the directory; `description` is set;
+  `runs_on` lists where the skill works (`web`, `local`).
 - Vendored skills (frontmatter has `source:`) also set `upstream_ref` and `last_reviewed`.
 - agents/openai.yaml exists, parses, and sets interface.display_name,
   short_description, and a default_prompt that mentions `$<name>`.
@@ -34,6 +35,7 @@ LINK = re.compile(r"\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+[\"'][^)]*[\"'])?\s*\)")
 INLINE_CODE = re.compile(r"`[^`]*`")
 URL_SCHEME = re.compile(r"^[a-z][a-z0-9+.-]*:", re.I)
 FENCE = re.compile(r"^\s*(```|~~~)")
+RUNS_ON = {"web", "local"}
 
 errors: list[str] = []
 
@@ -84,6 +86,14 @@ def check_skill(skill_md: str, tracked: set[str]) -> None:
     description = meta.get("description")
     if not isinstance(description, str) or not description.strip():
         error(skill_md, "description is missing or empty")
+    runs_on = meta.get("runs_on")
+    if (
+        not isinstance(runs_on, list)
+        or not runs_on
+        or not all(isinstance(v, str) for v in runs_on)
+        or not set(runs_on) <= RUNS_ON
+    ):
+        error(skill_md, f"runs_on must be a non-empty list drawn from {sorted(RUNS_ON)}, got {runs_on!r}")
     if "source" in meta:
         for field in ("upstream_ref", "last_reviewed"):
             if not meta.get(field):
