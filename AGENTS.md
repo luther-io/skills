@@ -71,7 +71,12 @@ Rules (the structure check enforces them):
 - No `plugins/lio/bin/`: claude.ai refuses a plugin that has a top-level `bin/`.
 - The plugin sits in its own folder with real files because claude.ai rejected a plugin at the repo root (luther-io/skills#13); symlinks inside the plugin are untested there.
 
-Locally, keep using the `setup.sh` symlinks and turn the synced copy off (`claude plugin disable lio@synced`), or each web skill shows up twice.
+Claude Code on a given machine takes the web skills one of two ways — never both, or each shows up twice:
+
+- **Symlinks (default):** `./setup.sh` links them into `~/.claude/skills`; edits apply instantly, other machines need a `git pull`. Turn the claude.ai-synced copy off with `claude plugin disable lio@synced`.
+- **Marketplace:** `./setup.sh --switch-to-marketplace` adds the marketplace, installs `lio@luther-io`, and removes the `~/.claude/skills` links for the web skills (they become `lio:<skill>`). With auto-update on (`/plugin` → Marketplaces → luther-io), a merge to `main` arrives at the next session start. Later plain `./setup.sh` runs detect the enabled plugin and keep those links out. `--switch-to-marketplace=<path to this clone>` loads the plugin in place, so edits apply without a push. To go back: `claude plugin uninstall lio@luther-io`, then `./setup.sh`.
+
+Either way, local-only skills and the generated `gitbutler` / `twg*` skills are not in the plugin and are always symlinked; OpenCode, Codex and `~/.agents/skills` are unaffected.
 
 ## Adding a new skill
 

@@ -47,6 +47,8 @@ The skills that work without a shell (`rubber-duck`, `reconcile-plans`, `to-issu
 
 They show up as `lio:<skill>`. Their files live in `plugins/lio/skills/`; `skills/<name>` is a symlink to them.
 
+If you also ran `./setup.sh`, each of these would be listed twice in Claude Code. `./setup.sh --switch-to-marketplace` does the install above and removes the duplicate `~/.claude/skills` links; the other skills stay symlinked.
+
 ## Provenance
 
 Most of the skills are forks or evolutions of public sets — Matt Pocock's skill collection and others — adapted to my workflow. Some are bespoke. The `marshal` skill (and its state/provenance label model) was rewritten from scratch in May 2026 as part of a redesign aimed at making the harness work for any new or existing repo.
