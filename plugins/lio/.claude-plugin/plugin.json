@@ -1,0 +1,9 @@
+{
+  "name": "lio",
+  "description": "The skills that work without a local shell: rubber-duck, reconcile-plans, to-issues, review-pr, diagnose, zoom-out, improve-codebase-architecture.",
+  "author": {
+    "name": "Luther IO",
+    "url": "https://github.com/luther-io"
+  },
+  "repository": "https://github.com/luther-io/skills"
+}

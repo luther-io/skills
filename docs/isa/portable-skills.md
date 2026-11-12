@@ -7,7 +7,7 @@ I edit a skill in this repo, merge to main, and it shows up on claude.ai (chat, 
 ## Constraints
 
 - This repo (`luther-io/skills`, public) is the only place skills are edited. claude.ai is a one-way publish target; edits made there are overwritten.
-- Distribution is a Claude plugin marketplace at the repo root: marketplace `luther-io`, one plugin `lio`, so web skills appear as `lio:<skill>`.
+- Distribution is a Claude plugin marketplace at the repo root: marketplace `luther-io`, one plugin `lio` in `plugins/lio/`, so web skills appear as `lio:<skill>`.
 - No build step and no transformed copies: web skills are written to work both locally and on claude.ai.
 - No `version` field in `plugin.json` or the marketplace entry, so every commit on main reaches users.
 - No top-level `bin/` directory (claude.ai refuses to install plugins that have one).
@@ -28,12 +28,16 @@ I edit a skill in this repo, merge to main, and it shows up on claude.ai (chat, 
 - 2026-11-10 — The WarpBuild gate narrowed from "all implementation" to work that adds CI jobs — the gitignore fix and `runs_on` don't change CI, so they can merge on the current runners.
 - 2026-11-10 — A spike on claude.ai comes before building the marketplace — the root-level marketplace with a chosen skill list is documented for Claude Code but hasn't been observed on claude.ai.
 - 2026-11-10 — ChatGPT as a separate ISA, WarpBuild out of scope, and ISC-1 to ISC-9 confirmed as written.
+- 2026-11-12 — The plugin lives in `plugins/lio/` with its own `plugin.json`; web skills' real files move there and `skills/<name>` becomes a symlink — the spike (#13) showed claude.ai rejects a repo-root plugin, and symlinks inside a plugin are untested there, so the published side gets the real files.
+- 2026-11-12 — No generated skill list: the structure check asserts "in `plugins/lio/skills/` ⇔ `runs_on` includes `web`" instead — with the plugin in its own folder, the folder is the list.
+- 2026-11-12 — `review-pr` joins the web skills — the review needs only the PR's diff and description, which a cloud session's GitHub tools, a connector, or a paste can supply; `isa-check` stays local for now.
+- 2026-11-12 — CI runs `claude plugin validate .` without `--strict` — strict fails on the missing `version`, which stays out so every commit reaches users.
 
 ## Ideal State Criteria
 
 - **ISC-1** — Every tracked hand-written skill declares `runs_on` with values from {web, local} — eval: assert: `uv run --script .github/scripts/check_skill_structure.py`
-- **ISC-2** — The `skills` list on the `lio` entry in `.claude-plugin/marketplace.json` equals the set of skills whose `runs_on` includes `web` — eval: assert: generator `--check` in CI
-- **ISC-3** — The marketplace passes validation — eval: test: `claude plugin validate --strict .` in CI
+- **ISC-2** — The skills in `plugins/lio/skills/` are exactly the skills whose `runs_on` includes `web`, each with a `skills/<name>` symlink — eval: assert: `uv run --script .github/scripts/check_skill_structure.py`
+- **ISC-3** — The marketplace passes validation — eval: test: `claude plugin validate .` in CI
 - **ISC-4** — A merge to main that changes a web skill reaches claude.ai within 24 hours with no manual step — eval: question set: spot-check the skill's content on claude.ai after a merge
 - **ISC-5** — Each web skill runs its core flow in a claude.ai chat without getting stuck on a tool it doesn't have — eval: question set: one smoke prompt per web skill
 - **ISC-6** — claude.ai has exactly one rubber-duck skill, `lio:rubber-duck` — eval: question set: check Customize → Skills

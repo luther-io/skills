@@ -10,12 +10,33 @@
 # - $OPENCODE_SKILLS_DIR ($HOME/.config/opencode/skills/<name>) — OpenCode. Same shape.
 # - $CODEX_SKILLS_DIR ($HOME/.codex/skills/<name>) — Codex. Same shape.
 #
+# Usage:
+#   ./setup.sh                                   # link everything (the default)
+#   ./setup.sh --switch-to-marketplace[=SOURCE]  # Claude Code only: take the web skills
+#       from the lio plugin instead of symlinks. Adds the marketplace (SOURCE defaults
+#       to luther-io/skills; pass a path to this clone to load it in place, so edits
+#       apply without a push), installs lio@luther-io, and drops the ~/.claude/skills
+#       links the plugin replaces. Later plain runs see the plugin and keep them out.
+#       To go back: `claude plugin uninstall lio@luther-io`, then ./setup.sh.
+#
 # Idempotent: safe to re-run after adding, removing, or renaming skills.
 # - Replaces existing symlinks pointing at stale targets (e.g. an older clone path).
 # - Skips real directories at the target (won't clobber); reports them.
 # - Reports dangling symlinks in each per-skill destination.
 
 set -euo pipefail
+
+LIO_PLUGIN="lio@luther-io"
+switch_to_marketplace=0
+marketplace_source="luther-io/skills"
+for arg in "$@"; do
+  case "$arg" in
+    --switch-to-marketplace) switch_to_marketplace=1 ;;
+    --switch-to-marketplace=*) switch_to_marketplace=1; marketplace_source="${arg#*=}" ;;
+    -h | --help) sed -n '2,/^$/{s/^# \{0,1\}//;p;}' "$0"; exit 0 ;;
+    *) echo "error: unknown option: $arg (see --help)" >&2; exit 2 ;;
+  esac
+done
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DIR="$REPO_DIR/skills"
@@ -83,12 +104,28 @@ resolve_dir() {
   (cd -P "$1" 2>/dev/null && pwd -P)
 }
 
+# True when Claude Code has the lio plugin installed and enabled from the
+# luther-io marketplace. (lio@synced, the copy claude.ai syncs, doesn't count.)
+lio_plugin_enabled() {
+  command -v claude >/dev/null 2>&1 || return 1
+  claude plugin list --json 2>/dev/null | tr -d ' \n' |
+    grep -q "\"id\":\"$LIO_PLUGIN\"[^}]*\"enabled\":true"
+}
+
+# True when skills/<name> is a symlink into plugins/lio/skills/, i.e. the lio
+# plugin ships this skill.
+in_lio_plugin() {
+  [ -L "$SKILLS_DIR/$1" ] && [ "$(resolve_dir "$SKILLS_DIR/$1")" = "$(resolve_dir "$REPO_DIR/plugins/lio/skills/$1")" ]
+}
+
 # 2) Per-skill destinations: one symlink per skill under each target dir.
 # Claude Code, OpenCode, and Codex all enumerate their skills
 # directory, so each skill needs its own entry rather than a single parent symlink.
 link_skills_into() {
-  local target_dir="$1" label="$2"
-  local linked=0 replaced=0 skipped=0
+  # $3 = "skip-lio": leave out the skills the lio plugin ships, and remove links
+  # to them that an earlier run made (Claude Code would list each one twice).
+  local target_dir="$1" label="$2" mode="${3:-}"
+  local linked=0 replaced=0 skipped=0 unlinked=0
   local skill src link current
 
   for skill_path in "$SKILLS_DIR"/*/; do
@@ -98,6 +135,15 @@ link_skills_into() {
     skill="$(basename "$skill_path")"
     src="${skill_path%/}"
     link="$target_dir/$skill"
+
+    if [ "$mode" = "skip-lio" ] && in_lio_plugin "$skill"; then
+      if [ -L "$link" ] && [ "$(resolve_dir "$link")" = "$(resolve_dir "$src")" ]; then
+        rm "$link"
+        echo "unlinked $link (now lio:$skill, from the plugin)"
+        unlinked=$((unlinked + 1))
+      fi
+      continue
+    fi
 
     if [ -L "$link" ]; then
       current="$(readlink "$link")"
@@ -124,6 +170,9 @@ link_skills_into() {
   done
 
   echo "$label: $linked new symlinks, $replaced replaced, $skipped skipped (real dirs)."
+  if [ "$mode" = "skip-lio" ]; then
+    echo "$label: web skills come from the $LIO_PLUGIN plugin ($unlinked symlinks removed this run)."
+  fi
 }
 
 # 3) Report dangling symlinks in a per-skill destination (point at paths
@@ -210,7 +259,28 @@ adopt_real_skills "$CLAUDE_SKILLS_DIR"
 adopt_real_skills "$OPENCODE_SKILLS_DIR"
 adopt_real_skills "$CODEX_SKILLS_DIR"
 
-link_skills_into "$CLAUDE_SKILLS_DIR" "claude"
+# 2c) Claude Code can take the web skills from the lio plugin instead of symlinks.
+if [ "$switch_to_marketplace" -eq 1 ]; then
+  if ! command -v claude >/dev/null 2>&1; then
+    echo "error: --switch-to-marketplace needs the claude CLI on PATH" >&2
+    exit 1
+  fi
+  echo "running  claude plugin marketplace add $marketplace_source"
+  claude plugin marketplace add "$marketplace_source"
+  echo "running  claude plugin install $LIO_PLUGIN"
+  claude plugin install "$LIO_PLUGIN"
+  if ! lio_plugin_enabled; then
+    echo "error: $LIO_PLUGIN is not enabled after install; leaving the symlinks alone" >&2
+    exit 1
+  fi
+  echo "note     auto-update is off by default: in Claude Code, /plugin -> Marketplaces -> luther-io -> Enable auto-update"
+fi
+
+if lio_plugin_enabled; then
+  link_skills_into "$CLAUDE_SKILLS_DIR" "claude" skip-lio
+else
+  link_skills_into "$CLAUDE_SKILLS_DIR" "claude"
+fi
 link_skills_into "$OPENCODE_SKILLS_DIR" "opencode"
 link_skills_into "$CODEX_SKILLS_DIR" "codex"
 

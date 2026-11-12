@@ -35,6 +35,8 @@ last_reviewed: <YYYY-MM-DD>
 
 `agents/openai.yaml` contains Codex-facing display metadata. Use `policy.allow_implicit_invocation: false` there for skills that should only run when explicitly invoked.
 
+Skills whose `runs_on` includes `web` are published to claude.ai, so their real files live in `plugins/lio/skills/<name>/` and `skills/<name>` is a symlink to that folder (see "claude.ai plugin marketplace"). Everything else in this file that says `skills/<name>/` holds for them through the symlink.
+
 Supporting files live alongside `SKILL.md` in the same directory (e.g. `marshal/triage-labels.md`, `rubber-duck/ADR-FORMAT.md`). The skill body references them by relative path; agents only read them when the skill instructs them to.
 
 Skills cross-reference each other by name (e.g. `marshal` mentions `to-issues` and `diagnose`). Renaming or removing a skill silently breaks those references — use `rg` before doing so.
@@ -54,9 +56,31 @@ Four destinations, two patterns:
 
 `setup.sh` reports new symlinks, replaced symlinks (target moved), skipped real directories (won't clobber), and dangling symlinks (point at non-existent paths — usually leftovers from a renamed/removed skill; remove manually — except dangling `twg*` links, which it prunes).
 
+## claude.ai plugin marketplace
+
+The repo is also a Claude plugin marketplace, so claude.ai (chat, Cowork, mobile) can install the web skills straight from GitHub:
+
+- `.claude-plugin/marketplace.json` — marketplace `luther-io`, one plugin entry, `lio`.
+- `plugins/lio/.claude-plugin/plugin.json` — the plugin manifest. Its skills show up as `lio:<skill>`.
+- `plugins/lio/skills/<name>/` — the real files of every skill whose `runs_on` includes `web`. `skills/<name>` is a relative symlink (`../plugins/lio/skills/<name>`), so `setup.sh` and local agents see no difference.
+
+Rules (the structure check enforces them):
+
+- A skill is in the plugin if and only if its `runs_on` includes `web`. To publish a skill: `git mv skills/<name> plugins/lio/skills/<name>`, then `ln -s ../plugins/lio/skills/<name> skills/<name>`, and add `web` to `runs_on`. To unpublish, reverse it.
+- No `version` in `plugin.json` or the marketplace entry: a version pins users to it, and without one every commit on `main` is a new release.
+- No `plugins/lio/bin/`: claude.ai refuses a plugin that has a top-level `bin/`.
+- The plugin sits in its own folder with real files because claude.ai rejected a plugin at the repo root (luther-io/skills#13); symlinks inside the plugin are untested there.
+
+Claude Code on a given machine takes the web skills one of two ways — never both, or each shows up twice:
+
+- **Symlinks (default):** `./setup.sh` links them into `~/.claude/skills`; edits apply instantly, other machines need a `git pull`. Turn the claude.ai-synced copy off with `claude plugin disable lio@synced`.
+- **Marketplace:** `./setup.sh --switch-to-marketplace` adds the marketplace, installs `lio@luther-io`, and removes the `~/.claude/skills` links for the web skills (they become `lio:<skill>`). With auto-update on (`/plugin` → Marketplaces → luther-io), a merge to `main` arrives at the next session start. Later plain `./setup.sh` runs detect the enabled plugin and keep those links out. `--switch-to-marketplace=<path to this clone>` loads the plugin in place, so edits apply without a push. To go back: `claude plugin uninstall lio@luther-io`, then `./setup.sh`.
+
+Either way, local-only skills and the generated `gitbutler` / `twg*` skills are not in the plugin and are always symlinked; OpenCode, Codex and `~/.agents/skills` are unaffected.
+
 ## Adding a new skill
 
-1. Create `skills/<name>/SKILL.md` with the frontmatter above.
+1. Create `skills/<name>/SKILL.md` with the frontmatter above (for a `web` skill, create it in `plugins/lio/skills/<name>/` and symlink `skills/<name>` to it).
 2. Create `skills/<name>/agents/openai.yaml` with `display_name`, `short_description`, and a `default_prompt` that mentions `$<name>`.
 3. Add any supporting files in the same directory.
 4. Run the checks below. Both see new files before you commit them.
@@ -67,7 +91,8 @@ Four destinations, two patterns:
 CI (`.github/workflows/checks.yml`) runs these on every push to `main` and every PR. Run the same ones locally first, so nothing gets flagged after it's pushed:
 
 - **`scripts/scan-skills.sh`**: SkillSpector static scan of every skill git tracks or would commit. **Required before committing any change under `skills/`.** It fails when a skill's risk score is above 50 ("DO NOT INSTALL"). Lower-scoring findings don't fail it, but don't add new ones without a reason. Run with `-v` to list them all.
-- **`uv run --script .github/scripts/check_skill_structure.py`**: frontmatter, `name` matching the directory, `runs_on`, `agents/openai.yaml`, vendored provenance fields, and relative markdown links that point at real files in the repo.
+- **`uv run --script .github/scripts/check_skill_structure.py`**: frontmatter, `name` matching the directory, `runs_on`, `agents/openai.yaml`, vendored provenance fields, relative markdown links that point at real files in the repo, and the `lio` plugin holding exactly the `web` skills.
+- **`claude plugin validate .`**: the marketplace and plugin manifests load. Not `--strict`: that fails on the missing `version`, which is left out on purpose.
 - **ShellCheck** on tracked `*.sh` files: CI only, unless `shellcheck` is installed locally.
 
 The SkillSpector version is pinned once, in `scripts/scan-skills.sh`; CI follows it. To bump it, change the pin there, then update the local install with `uv tool install --force git+https://github.com/NVIDIA/SkillSpector.git@v<version>`. The script warns when the local version doesn't match the pin.

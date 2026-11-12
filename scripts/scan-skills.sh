@@ -74,9 +74,10 @@ if [ ${#targets[@]} -eq 0 ]; then
     done
   else
     # Tracked plus new-but-not-ignored, so a skill you're about to commit is included.
+    # Web skills live in plugins/lio/skills/ (skills/<name> is a symlink to them).
     while IFS= read -r f; do
       [ -f "$f" ] && targets+=("${f%/SKILL.md}")
-    done < <(git ls-files --cached --others --exclude-standard -- ':(glob)skills/*/SKILL.md' | sort -u)
+    done < <(git ls-files --cached --others --exclude-standard -- ':(glob)skills/*/SKILL.md' ':(glob)plugins/*/skills/*/SKILL.md' | sort -u)
   fi
 fi
 if [ ${#targets[@]} -eq 0 ]; then
@@ -100,6 +101,11 @@ total=0
 for dir in "${targets[@]}"; do
   total=$((total + 1))
   name="$(basename "$dir")"
+  # Web skills are symlinks into plugins/lio/skills/; SkillSpector refuses a
+  # symlinked input, so scan the real directory.
+  if [ -L "$dir" ]; then
+    dir="$(cd -P "$dir" && pwd -P)"
+  fi
   if [ ! -f "$dir/SKILL.md" ]; then
     echo "FAIL  $name: no SKILL.md in $dir"
     echo "| $name | FAIL | – | no SKILL.md | – |" >>"$rows"

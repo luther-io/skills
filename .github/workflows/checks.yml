@@ -40,6 +40,18 @@ jobs:
           enable-cache: false
       - run: uv run --script .github/scripts/check_skill_structure.py
 
+  marketplace:
+    name: Plugin marketplace
+    runs-on: warp-ubuntu-2604-x64-4x
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Not --strict: that fails on the missing `version`, left out on purpose
+      # so every commit on main reaches users (see AGENTS.md).
+      - run: npx --yes @anthropic-ai/claude-code@2.1.322 plugin validate .
+
   shellcheck:
     name: ShellCheck
     runs-on: warp-ubuntu-2604-x64-4x
