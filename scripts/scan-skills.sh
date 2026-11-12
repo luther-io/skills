@@ -74,9 +74,10 @@ if [ ${#targets[@]} -eq 0 ]; then
     done
   else
     # Tracked plus new-but-not-ignored, so a skill you're about to commit is included.
+    # Web skills live in plugins/lio/skills/ (skills/<name> is a symlink to them).
     while IFS= read -r f; do
       [ -f "$f" ] && targets+=("${f%/SKILL.md}")
-    done < <(git ls-files --cached --others --exclude-standard -- ':(glob)skills/*/SKILL.md' | sort -u)
+    done < <(git ls-files --cached --others --exclude-standard -- ':(glob)skills/*/SKILL.md' ':(glob)plugins/*/skills/*/SKILL.md' | sort -u)
   fi
 fi
 if [ ${#targets[@]} -eq 0 ]; then

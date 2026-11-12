@@ -1,0 +1,15 @@
+{
+  "name": "luther-io",
+  "description": "Skills for AI coding agents and claude.ai: intent interviews, plan reconciliation, issue breakdown, debugging, and architecture review.",
+  "owner": {
+    "name": "Luther IO",
+    "url": "https://github.com/luther-io"
+  },
+  "plugins": [
+    {
+      "name": "lio",
+      "source": "./plugins/lio",
+      "description": "The skills that work without a local shell: rubber-duck, reconcile-plans, to-issues, diagnose, zoom-out, improve-codebase-architecture."
+    }
+  ]
+}

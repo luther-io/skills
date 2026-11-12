@@ -37,6 +37,16 @@ cd ~/work/personal/skills
 
 `setup.sh` wires the skills into every agent: one parent symlink at `~/.agents/skills` (the universal AGENTS.md-convention location), plus one symlink per skill into `~/.claude/skills`, `~/.config/opencode/skills`, and `~/.codex/skills` — so the skills become invokable via `/<name>` in any session. It also mirrors the GitButler steering block into the Codex and OpenCode instruction files. Idempotent — safe to re-run after adding skills.
 
+### On claude.ai
+
+The skills that work without a shell (`rubber-duck`, `reconcile-plans`, `to-issues`, `diagnose`, `zoom-out`, `improve-codebase-architecture`) are also published as a Claude plugin, `lio`, from this repo's marketplace. On claude.ai: Customize → Plugins → Add marketplace → `luther-io/skills`, then install `lio`. In Claude Code:
+
+```sh
+/plugin install lio --marketplace luther-io/skills
+```
+
+They show up as `lio:<skill>`. Their files live in `plugins/lio/skills/`; `skills/<name>` is a symlink to them.
+
 ## Provenance
 
 Most of the skills are forks or evolutions of public sets — Matt Pocock's skill collection and others — adapted to my workflow. Some are bespoke. The `marshal` skill (and its state/provenance label model) was rewritten from scratch in May 2026 as part of a redesign aimed at making the harness work for any new or existing repo.
