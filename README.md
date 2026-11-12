@@ -14,7 +14,7 @@ The skills currently cover, roughly:
 - **Intent / understanding** — `rubber-duck`: I probably use this the most. I tell the agent what I want to accomplish, and then it interviews me about it, against the project's domain language and capturing decisions when the project documents them. This used to write plans, which would then be converted to issues, but lately I'm modifying this to use "intents" and to achieve an ISA (Ideal State Artifact). I may run this multiple times with different models.
 - **Second / third pair of eyes** — `reconcile-plans` (the follow-up to `rubber-duck`: reconcile multiple plans or ISAs for the same work — produced by different models or sessions — into one, surfacing where they agree, where they diverge, and the catches only one model noticed, optionally convening a lens-based review council).
 - **Issue workflow** — `to-issues` (break a plan or ISA into tickets; ISA-sourced tickets cite the criteria they satisfy).
-- **Code review** — `review-pr`: review PRs that I have been asked to review, or were assigned to me. This will query the Jira/Github issue to understand the problem, and then look at the PR itself. Currently this gives me the cliffnotes of the changes so I can either manually add my comments, or I decide if I want the agent to write the comments. I'm not 100% comfortable with the agent understanding all the business logic, or my ability to explain the intent, but this helps me out tremendously. This is probably my second most used skill.
+- **Code review** — `review-pr`: review PRs that I have been asked to review, or were assigned to me — on GitHub, Bitbucket, Gitea or Forgejo. This will query the Jira/Github issue to understand the problem, and then look at the PR itself. Currently this gives me the cliffnotes of the changes so I can either manually add my comments, or I decide if I want the agent to write the comments. I'm not 100% comfortable with the agent understanding all the business logic, or my ability to explain the intent, but this helps me out tremendously. This is probably my second most used skill.
 - **Understanding code** — `zoom-out` (map an unfamiliar area: purpose, modules, callers, where to start reading).
 - **Debugging / troubleshooting** — `diagnose` (disciplined debugging loop).
 - **Did we hit the goal?** — `isa-check`: runs each ISC's eval against the current code and updates the ISA's Status. This is the "are we done" check.
@@ -39,7 +39,7 @@ cd ~/work/personal/skills
 
 ### On claude.ai
 
-The skills that work without a shell (`rubber-duck`, `reconcile-plans`, `to-issues`, `diagnose`, `zoom-out`, `improve-codebase-architecture`) are also published as a Claude plugin, `lio`, from this repo's marketplace. On claude.ai: Customize → Plugins → Add marketplace → `luther-io/skills`, then install `lio`. In Claude Code:
+The skills that work without a shell (`rubber-duck`, `reconcile-plans`, `to-issues`, `review-pr`, `diagnose`, `zoom-out`, `improve-codebase-architecture`) are also published as a Claude plugin, `lio`, from this repo's marketplace. On claude.ai: Customize → Plugins → Add marketplace → `luther-io/skills`, then install `lio`. In Claude Code:
 
 ```sh
 /plugin install lio --marketplace luther-io/skills

@@ -101,6 +101,11 @@ total=0
 for dir in "${targets[@]}"; do
   total=$((total + 1))
   name="$(basename "$dir")"
+  # Web skills are symlinks into plugins/lio/skills/; SkillSpector refuses a
+  # symlinked input, so scan the real directory.
+  if [ -L "$dir" ]; then
+    dir="$(cd -P "$dir" && pwd -P)"
+  fi
   if [ ! -f "$dir/SKILL.md" ]; then
     echo "FAIL  $name: no SKILL.md in $dir"
     echo "| $name | FAIL | – | no SKILL.md | – |" >>"$rows"

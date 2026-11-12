@@ -30,6 +30,7 @@ I edit a skill in this repo, merge to main, and it shows up on claude.ai (chat, 
 - 2026-11-10 — ChatGPT as a separate ISA, WarpBuild out of scope, and ISC-1 to ISC-9 confirmed as written.
 - 2026-11-12 — The plugin lives in `plugins/lio/` with its own `plugin.json`; web skills' real files move there and `skills/<name>` becomes a symlink — the spike (#13) showed claude.ai rejects a repo-root plugin, and symlinks inside a plugin are untested there, so the published side gets the real files.
 - 2026-11-12 — No generated skill list: the structure check asserts "in `plugins/lio/skills/` ⇔ `runs_on` includes `web`" instead — with the plugin in its own folder, the folder is the list.
+- 2026-11-12 — `review-pr` joins the web skills — the review needs only the PR's diff and description, which a cloud session's GitHub tools, a connector, or a paste can supply; `isa-check` stays local for now.
 - 2026-11-12 — CI runs `claude plugin validate .` without `--strict` — strict fails on the missing `version`, which stays out so every commit reaches users.
 
 ## Ideal State Criteria
