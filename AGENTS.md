@@ -49,6 +49,7 @@ Four destinations, two patterns:
 2. **`~/.claude/skills/<name>`** — one symlink per skill. Claude Code discovers user-level skills by enumerating this directory, so each skill needs its own entry.
 3. **`~/.config/opencode/skills/<name>`** — one symlink per skill, same shape. OpenCode enumerates this directory.
 4. **`~/.codex/skills/<name>`** — one symlink per skill, same shape. Codex enumerates this directory.
+5. **`~/.gemini/config/skills/<name>`** — one symlink per skill, same shape. Antigravity (app, CLI, and IDE) reads this global directory.
 
 `setup.sh` also reproduces `but agent setup` (see the gitbutler special case below): `scripts/refresh-gitbutler-skill.sh` generates `gitbutler-steering.md` and injects it into `~/.codex/AGENTS.md` and `~/.config/opencode/AGENTS.md`; `setup.sh` symlinks it to `~/.claude/rules/gitbutler.md`.
 
@@ -99,7 +100,7 @@ The SkillSpector version is pinned once, in `scripts/scan-skills.sh`; CI follows
 
 ## Third-party (vendored) skills
 
-Skills may be forks of public skill sets vendored into `skills/` and then adapted (currently three, all from mattpocock/skills: `diagnose`, `improve-codebase-architecture`, `rubber-duck`). When vendored, they are **ours now** — we never auto-update them.
+Skills may be forks of public skill sets vendored into `skills/` and then adapted (currently four: `diagnose`, `improve-codebase-architecture`, and `rubber-duck` from mattpocock/skills, and `spaceman-setup` from [anomalyco/spaceman](https://github.com/anomalyco/spaceman)). When vendored, they are **ours now** — we never auto-update them.
 
 When a vendored skill diverges so far that upstream is no longer a useful source of updates (e.g. `to-issues`), de-vendor it: remove the provenance fields from its frontmatter and credit the origin in a line at the end of the skill body instead.
 
@@ -108,8 +109,6 @@ When a vendored skill diverges so far that upstream is no longer a useful source
 A vendored skill records its origin in the flat top-level frontmatter fields above. The presence of `source:` is what marks a skill as vendored; `rg '^source:' skills/*/SKILL.md` audits them. Bespoke skills have no `source:`.
 
 **Special case — `gitbutler`:** not vendored — generated. `scripts/refresh-gitbutler-skill.sh` runs `but skill install --path skills/gitbutler` whenever the `version:` stamp in `SKILL.md` differs from `but --version`, so the skill always matches the installed CLI. Only `skills/gitbutler/agents/` is tracked; the rest is gitignored. Never edit the generated files. The script runs from `setup.sh`, a Claude Code `SessionStart` hook (`~/.claude/settings.json`), and an OpenCode plugin (`~/.config/opencode/plugins/gitbutler-skill-refresh.js`). This doesn't contradict the no-auto-update rule: the content comes from the `but` binary agents already execute, not from a remote feed. The steering text works the same way: `gitbutler-steering.md` (gitignored) = `but agent setup --print` (the defaults, versioned with the CLI) + `gitbutler-steering.extra.md` (tracked; the wizard's opt-in sections, which `--print` omits). To change which opt-ins you use, edit `gitbutler-steering.extra.md` — the next run picks it up.
-
-**Special case — `spaceman-setup`:** fetched on `./setup.sh` by `scripts/refresh-spaceman-skill.sh` from [anomalyco/spaceman](https://github.com/anomalyco/spaceman) (`skills/spaceman-setup/SKILL.md`, with fallback to `https://anoma.ly/spaceman/skill.md`). Like `gitbutler`, only `skills/spaceman-setup/agents/` is tracked and `skills/spaceman-setup/SKILL.md` is gitignored.
 
 ### Updating a vendored skill
 

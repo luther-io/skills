@@ -9,6 +9,8 @@
 #   needs its own entry in this directory because that's where Claude Code discovers them.
 # - $OPENCODE_SKILLS_DIR ($HOME/.config/opencode/skills/<name>) — OpenCode. Same shape.
 # - $CODEX_SKILLS_DIR ($HOME/.codex/skills/<name>) — Codex. Same shape.
+# - $GEMINI_SKILLS_DIR ($HOME/.gemini/config/skills/<name>) — Antigravity (app, CLI,
+#   and IDE all read this global dir). Same shape.
 #
 # Usage:
 #   ./setup.sh                                   # link everything (the default)
@@ -46,6 +48,7 @@ AGENT_SKILLS_DIR="$AGENTS_DIR/skills"
 CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 OPENCODE_SKILLS_DIR="$HOME/.config/opencode/skills"
 CODEX_SKILLS_DIR="$HOME/.codex/skills"
+GEMINI_SKILLS_DIR="$HOME/.gemini/config/skills"
 
 if [ ! -d "$SKILLS_DIR" ]; then
   echo "error: $SKILLS_DIR does not exist" >&2
@@ -64,6 +67,7 @@ mkdir -p "$AGENTS_DIR"
 mkdir -p "$CLAUDE_SKILLS_DIR"
 mkdir -p "$OPENCODE_SKILLS_DIR"
 mkdir -p "$CODEX_SKILLS_DIR"
+mkdir -p "$GEMINI_SKILLS_DIR"
 
 # 1) Universal location: $AGENT_SKILLS_DIR is one symlink to this repo's skills/.
 # Single parent symlink (rather than per-skill) keeps the AGENTS.md path
@@ -245,11 +249,7 @@ adopt_real_skills() {
   done
 }
 
-# 2b) skills/spaceman-setup/SKILL.md is fetched from anomalyco/spaceman
-# (gitignored) so local agents always have the current upstream guide.
-"$REPO_DIR/scripts/refresh-spaceman-skill.sh"
-
-# 2b-ii) skills/gitbutler and gitbutler-steering.md are generated from the
+# 2b) skills/gitbutler and gitbutler-steering.md are generated from the
 # installed `but` CLI (gitignored), so they always match the binary agents run.
 # Agent session hooks call the same script between setup runs.
 if command -v but >/dev/null 2>&1; then
@@ -262,6 +262,7 @@ fi
 adopt_real_skills "$CLAUDE_SKILLS_DIR"
 adopt_real_skills "$OPENCODE_SKILLS_DIR"
 adopt_real_skills "$CODEX_SKILLS_DIR"
+adopt_real_skills "$GEMINI_SKILLS_DIR"
 
 # 2c) Claude Code can take the web skills from the lio plugin instead of symlinks.
 if [ "$switch_to_marketplace" -eq 1 ]; then
@@ -287,6 +288,7 @@ else
 fi
 link_skills_into "$OPENCODE_SKILLS_DIR" "opencode"
 link_skills_into "$CODEX_SKILLS_DIR" "codex"
+link_skills_into "$GEMINI_SKILLS_DIR" "antigravity"
 
 # 4) GitButler steering: gitbutler-steering.md is generated (gitignored) by
 # scripts/refresh-gitbutler-skill.sh in step 2b, which also syncs it into the
@@ -321,6 +323,7 @@ fi
 report_dangling "$CLAUDE_SKILLS_DIR"
 report_dangling "$OPENCODE_SKILLS_DIR"
 report_dangling "$CODEX_SKILLS_DIR"
+report_dangling "$GEMINI_SKILLS_DIR"
 
 echo
 echo "Skills setup complete."
