@@ -49,6 +49,7 @@ Four destinations, two patterns:
 2. **`~/.claude/skills/<name>`** — one symlink per skill. Claude Code discovers user-level skills by enumerating this directory, so each skill needs its own entry.
 3. **`~/.config/opencode/skills/<name>`** — one symlink per skill, same shape. OpenCode enumerates this directory.
 4. **`~/.codex/skills/<name>`** — one symlink per skill, same shape. Codex enumerates this directory.
+5. **`~/.gemini/config/skills/<name>`** — one symlink per skill, same shape. Antigravity (app, CLI, and IDE) reads this global directory.
 
 `setup.sh` also reproduces `but agent setup` (see the gitbutler special case below): `scripts/refresh-gitbutler-skill.sh` generates `gitbutler-steering.md` and injects it into `~/.codex/AGENTS.md` and `~/.config/opencode/AGENTS.md`; `setup.sh` symlinks it to `~/.claude/rules/gitbutler.md`.
 

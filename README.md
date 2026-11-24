@@ -24,6 +24,7 @@ The skills currently cover, roughly:
 - **Stack-specific helpers** — `migrate-oxlint`.
 - **Work context (Atlassian)** — `twg*` skills (Jira, Confluence, Bitbucket, status rollups, ownership routing), installed by the `twg` CLI via `setup.sh`; not committed here.
 - **Reminders** — `remctl` (Apple Reminders, local to my Mac and hopefully more secure). I'm also testing Remember The Milk, which is a connector rather than a skill here — handy because it works in the cloud. Still figuring out which suits me.
+- **Window management** — `spaceman` (Spaceman macOS tiling window manager CLI usage, configuration, controls, and troubleshooting).
 
 Wondering what ISA, ISC, AFK, or a tracer bullet is? See [CONVENTIONS.md](./CONVENTIONS.md) — glossary plus example workflows.
 
@@ -35,7 +36,7 @@ cd ~/work/personal/skills
 ./setup.sh
 ```
 
-`setup.sh` wires the skills into every agent: one parent symlink at `~/.agents/skills` (the universal AGENTS.md-convention location), plus one symlink per skill into `~/.claude/skills`, `~/.config/opencode/skills`, and `~/.codex/skills` — so the skills become invokable via `/<name>` in any session. It also mirrors the GitButler steering block into the Codex and OpenCode instruction files. Idempotent — safe to re-run after adding skills.
+`setup.sh` wires the skills into every agent: one parent symlink at `~/.agents/skills` (the universal AGENTS.md-convention location), plus one symlink per skill into `~/.claude/skills`, `~/.config/opencode/skills`, `~/.codex/skills`, and `~/.gemini/config/skills` (Antigravity) — so the skills become invokable via `/<name>` in any session. It also mirrors the GitButler steering block into the Codex and OpenCode instruction files. Idempotent — safe to re-run after adding skills.
 
 ### On claude.ai
 
