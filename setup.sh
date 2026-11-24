@@ -245,7 +245,11 @@ adopt_real_skills() {
   done
 }
 
-# 2b) skills/gitbutler and gitbutler-steering.md are generated from the
+# 2b) skills/spaceman-setup/SKILL.md is fetched from anomalyco/spaceman
+# (gitignored) so local agents always have the current upstream guide.
+"$REPO_DIR/scripts/refresh-spaceman-skill.sh"
+
+# 2b-ii) skills/gitbutler and gitbutler-steering.md are generated from the
 # installed `but` CLI (gitignored), so they always match the binary agents run.
 # Agent session hooks call the same script between setup runs.
 if command -v but >/dev/null 2>&1; then

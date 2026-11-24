@@ -76,3 +76,8 @@ skills/twg-*/
 skills/gitbutler/*
 !skills/gitbutler/agents/
 gitbutler-steering.md
+
+# Spaceman skill — fetched from anomalyco/spaceman by
+# scripts/refresh-spaceman-skill.sh (setup.sh).
+skills/spaceman-setup/*
+!skills/spaceman-setup/agents/

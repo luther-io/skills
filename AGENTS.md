@@ -109,6 +109,8 @@ A vendored skill records its origin in the flat top-level frontmatter fields abo
 
 **Special case — `gitbutler`:** not vendored — generated. `scripts/refresh-gitbutler-skill.sh` runs `but skill install --path skills/gitbutler` whenever the `version:` stamp in `SKILL.md` differs from `but --version`, so the skill always matches the installed CLI. Only `skills/gitbutler/agents/` is tracked; the rest is gitignored. Never edit the generated files. The script runs from `setup.sh`, a Claude Code `SessionStart` hook (`~/.claude/settings.json`), and an OpenCode plugin (`~/.config/opencode/plugins/gitbutler-skill-refresh.js`). This doesn't contradict the no-auto-update rule: the content comes from the `but` binary agents already execute, not from a remote feed. The steering text works the same way: `gitbutler-steering.md` (gitignored) = `but agent setup --print` (the defaults, versioned with the CLI) + `gitbutler-steering.extra.md` (tracked; the wizard's opt-in sections, which `--print` omits). To change which opt-ins you use, edit `gitbutler-steering.extra.md` — the next run picks it up.
 
+**Special case — `spaceman-setup`:** fetched on `./setup.sh` by `scripts/refresh-spaceman-skill.sh` from [anomalyco/spaceman](https://github.com/anomalyco/spaceman) (`skills/spaceman-setup/SKILL.md`, with fallback to `https://anoma.ly/spaceman/skill.md`). Like `gitbutler`, only `skills/spaceman-setup/agents/` is tracked and `skills/spaceman-setup/SKILL.md` is gitignored.
+
 ### Updating a vendored skill
 
 On need only — when the skill misbehaves, or you want a capability upstream gained. Not on a schedule (staleness here is a correctness annoyance; the update itself is the risky moment).

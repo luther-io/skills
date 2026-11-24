@@ -24,6 +24,7 @@ The skills currently cover, roughly:
 - **Stack-specific helpers** — `migrate-oxlint`.
 - **Work context (Atlassian)** — `twg*` skills (Jira, Confluence, Bitbucket, status rollups, ownership routing), installed by the `twg` CLI via `setup.sh`; not committed here.
 - **Reminders** — `remctl` (Apple Reminders, local to my Mac and hopefully more secure). I'm also testing Remember The Milk, which is a connector rather than a skill here — handy because it works in the cloud. Still figuring out which suits me.
+- **Window management** — `spaceman-setup` (Spaceman macOS tiling window manager setup, configuration, troubleshooting, and uninstall; fetched from [anomalyco/spaceman](https://github.com/anomalyco/spaceman) by `scripts/refresh-spaceman-skill.sh` during `./setup.sh`).
 
 Wondering what ISA, ISC, AFK, or a tracer bullet is? See [CONVENTIONS.md](./CONVENTIONS.md) — glossary plus example workflows.
 
