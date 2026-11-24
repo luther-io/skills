@@ -1,4 +1,0 @@
-interface:
-  display_name: "Spaceman Setup"
-  short_description: "Install, configure, verify, troubleshoot, or uninstall Spaceman on macOS"
-  default_prompt: "Use $spaceman-setup to set up, configure, or troubleshoot Spaceman."

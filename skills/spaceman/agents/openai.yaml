@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spaceman"
+  short_description: "Configure, use, inspect, or troubleshoot Spaceman on macOS"
+  default_prompt: "Use $spaceman to configure, use, or troubleshoot Spaceman."

@@ -24,7 +24,7 @@ The skills currently cover, roughly:
 - **Stack-specific helpers** — `migrate-oxlint`.
 - **Work context (Atlassian)** — `twg*` skills (Jira, Confluence, Bitbucket, status rollups, ownership routing), installed by the `twg` CLI via `setup.sh`; not committed here.
 - **Reminders** — `remctl` (Apple Reminders, local to my Mac and hopefully more secure). I'm also testing Remember The Milk, which is a connector rather than a skill here — handy because it works in the cloud. Still figuring out which suits me.
-- **Window management** — `spaceman-setup` (Spaceman macOS tiling window manager setup, configuration, troubleshooting, and uninstall; vendored from [anomalyco/spaceman](https://github.com/anomalyco/spaceman)).
+- **Window management** — `spaceman` (Spaceman macOS tiling window manager CLI usage, configuration, controls, and troubleshooting).
 
 Wondering what ISA, ISC, AFK, or a tracer bullet is? See [CONVENTIONS.md](./CONVENTIONS.md) — glossary plus example workflows.
 
@@ -54,7 +54,7 @@ If you also ran `./setup.sh`, each of these would be listed twice in Claude Code
 
 Most of the skills are forks or evolutions of public sets — Matt Pocock's skill collection and others — adapted to my workflow. Some are bespoke. The `marshal` skill (and its state/provenance label model) was rewritten from scratch in May 2026 as part of a redesign aimed at making the harness work for any new or existing repo.
 
-Vendored third-party skills record where they came from in their `SKILL.md` frontmatter: `source:` (upstream repo), `source_path:`, `upstream_ref:` (the commit last reconciled against), and `last_reviewed:`. The presence of `source:` is what marks a skill as third-party — `rg '^source:' skills/*/SKILL.md` lists them (currently four: three from mattpocock/skills and `spaceman-setup` from anomalyco/spaceman). These are forks, not mirrors: I adapt them, so upstream is somewhere I shop for improvements on need, not a feed I sync from. To review what changed upstream before pulling anything in, run `./update-thirdparty-skills.sh <name>` — it's read-only (shows the upstream diff and a Skillspector scan; never edits `skills/`).
+Vendored third-party skills record where they came from in their `SKILL.md` frontmatter: `source:` (upstream repo), `source_path:`, `upstream_ref:` (the commit last reconciled against), and `last_reviewed:`. The presence of `source:` is what marks a skill as third-party — `rg '^source:' skills/*/SKILL.md` lists them (currently three, all tracing back to mattpocock/skills). These are forks, not mirrors: I adapt them, so upstream is somewhere I shop for improvements on need, not a feed I sync from. To review what changed upstream before pulling anything in, run `./update-thirdparty-skills.sh <name>` — it's read-only (shows the upstream diff and a Skillspector scan; never edits `skills/`).
 
 ## Security 
 

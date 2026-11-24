@@ -100,7 +100,7 @@ The SkillSpector version is pinned once, in `scripts/scan-skills.sh`; CI follows
 
 ## Third-party (vendored) skills
 
-Skills may be forks of public skill sets vendored into `skills/` and then adapted (currently four: `diagnose`, `improve-codebase-architecture`, and `rubber-duck` from mattpocock/skills, and `spaceman-setup` from [anomalyco/spaceman](https://github.com/anomalyco/spaceman)). When vendored, they are **ours now** — we never auto-update them.
+Skills may be forks of public skill sets vendored into `skills/` and then adapted (currently three, all from mattpocock/skills: `diagnose`, `improve-codebase-architecture`, `rubber-duck`). When vendored, they are **ours now** — we never auto-update them.
 
 When a vendored skill diverges so far that upstream is no longer a useful source of updates (e.g. `to-issues`), de-vendor it: remove the provenance fields from its frontmatter and credit the origin in a line at the end of the skill body instead.
 
